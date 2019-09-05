@@ -1,0 +1,67 @@
+#!/usr/bin/perl
+
+# This program uses Euler's method to estimate the value of a first order ordinary differential equation
+# Wriiten by Owen O'Connor (tux2603)
+
+use POSIX qw/ceil/;
+
+# Initial conditions as given in problem
+my $yStart = 0.0;
+my $tStart = 1;
+
+# Value of y to solve for
+my $yEnd = 0.6;
+
+# Step size of algorithm
+my $h = 0.01;
+
+# Differential function
+sub f {
+	my $t = shift;
+	my $y = shift;
+
+	# Set this line to be whatever function is given in the problem
+	return -2*$t*$y;
+}
+
+###### CHANGE NOTHING BELOW THIS LINE ######
+
+# Calculate the number of steps needed to find the solution
+my $numSteps = ceil(($yEnd - $yStart) / $h);
+
+# Initialze a hash to store the data
+my @data;
+
+# Load initial condistion into the hash
+$data[0][0] = $yStart;
+$data[0][1] = $tStart;
+
+# Run the algorithm and populate the hash
+for(1..$numSteps) {
+	# Get the previous state
+	my $lastY = $data[$_ - 1][0];
+	my $lastT = $data[$_ - 1][1];
+
+	# Get the current y value
+	my $thisY = $yStart + $h * $_;
+
+	# Calculate the corresponding t value
+	my $thisT = $h * &f($lastT, $lastY) + $lastT;
+
+	$data[$_][0] = $thisY;
+	$data[$_][1] = $thisT;
+}
+
+my $dataString = "";
+
+# Print out the values in the hash
+for $i (@data) {
+	print "y(@$i[0]) = @$i[1]\n";
+	$dataString .= "@$i\\n";
+}
+
+# Display a nice pretty graph
+`echo "$dataString" | gnuplot -p -e 'plot "-" with lines'`;
+
+
+
