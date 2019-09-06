@@ -6,14 +6,20 @@
 use POSIX qw/ceil/;
 
 # Initial conditions as given in problem
-my $yStart = 0.0;
-my $tStart = 1;
+print "Enter starting y value: ";
+chomp(my $yStart = <>);
+print "Enter starting t value: ";
+chomp(my $tStart = <>);
 
-# Value of y to solve for
-my $yEnd = 0.6;
+# Value of t to solve for
+print "\nEnter value of t to approximate y(t) for: ";
+chomp(my $tEnd = <>);
 
 # Step size of algorithm
-my $h = 0.01;
+print "Enter step size: ";
+chomp(my $h = <>);
+
+# TODO: Allow user to enter a custom fuction in terms of y and t
 
 # Differential function
 sub f {
@@ -27,7 +33,7 @@ sub f {
 ###### CHANGE NOTHING BELOW THIS LINE ######
 
 # Calculate the number of steps needed to find the solution
-my $numSteps = ceil(($yEnd - $yStart) / $h);
+my $numSteps = ceil(($tEnd - $yStart) / $h);
 
 # Initialze a hash to store the data
 my @data;
