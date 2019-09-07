@@ -6,10 +6,10 @@
 use POSIX qw/ceil/;
 
 # Initial conditions as given in problem
-print "Enter starting y value: ";
-chomp(my $yStart = <>);
 print "Enter starting t value: ";
 chomp(my $tStart = <>);
+print "Enter starting y value: ";
+chomp(my $yStart = <>);
 
 # Value of t to solve for
 print "\nEnter value of t to approximate y(t) for: ";
@@ -19,43 +19,40 @@ chomp(my $tEnd = <>);
 print "Enter step size: ";
 chomp(my $h = <>);
 
-# TODO: Allow user to enter a custom fuction in terms of y and t
+print "y' = ";
+chomp(my $yPrime = <>);
 
 # Differential function
 sub f {
 	my $t = shift;
 	my $y = shift;
-
-	# Set this line to be whatever function is given in the problem
-	return -2*$t*$y;
+	return eval $yPrime;
 }
 
-###### CHANGE NOTHING BELOW THIS LINE ######
-
 # Calculate the number of steps needed to find the solution
-my $numSteps = ceil(($tEnd - $yStart) / $h);
+my $numSteps = ceil(($tEnd - $tStart) / $h);
 
-# Initialze a hash to store the data
+# Initialze an array to store the data
 my @data;
 
 # Load initial condistion into the hash
-$data[0][0] = $yStart;
-$data[0][1] = $tStart;
+$data[0][0] = $tStart;
+$data[0][1] = $yStart;
 
 # Run the algorithm and populate the hash
 for(1..$numSteps) {
 	# Get the previous state
-	my $lastY = $data[$_ - 1][0];
-	my $lastT = $data[$_ - 1][1];
+	my $lastT = $data[$_ - 1][0];
+	my $lastY = $data[$_ - 1][1];
 
 	# Get the current y value
-	my $thisY = $yStart + $h * $_;
+	my $thisT = $tStart + $h * $_;
 
 	# Calculate the corresponding t value
-	my $thisT = $h * &f($lastT, $lastY) + $lastT;
+	my $thisY = $h * &f($lastT, $lastY) + $lastY;
 
-	$data[$_][0] = $thisY;
-	$data[$_][1] = $thisT;
+	$data[$_][0] = $thisT;
+	$data[$_][1] = $thisY;
 }
 
 my $dataString = "";
