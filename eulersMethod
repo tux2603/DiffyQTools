@@ -4,20 +4,30 @@
 # Wriiten by Owen O'Connor (tux2603)
 
 use POSIX qw/ceil/;
+use Math::BigFloat qw/:constant/;
+Math::BigFloat->precision(-(shift or 10));
+
+print "Enter desired number of significant digits: ";
+chomp(my $sigdigs = <>);
+Math::BigFloat->accuracy($sigdigs);
 
 # Initial conditions as given in problem
-print "Enter starting t value: ";
+print "\nEnter starting t value: ";
 chomp(my $tStart = <>);
+$tStart = Math::BigFloat->new($tStart);
 print "Enter starting y value: ";
 chomp(my $yStart = <>);
+$yStart = Math::BigFloat->new($yStart);
 
 # Value of t to solve for
 print "\nEnter value of t to approximate y(t) for: ";
 chomp(my $tEnd = <>);
+$tEnd = Math::BigFloat->new($tEnd);
 
 # Step size of algorithm
 print "Enter step size: ";
 chomp(my $h = <>);
+$h = Math::BigFloat->new($h);
 
 print "y' = ";
 chomp(my $yPrime = <>);
@@ -39,6 +49,10 @@ my @data;
 $data[0][0] = $tStart;
 $data[0][1] = $yStart;
 
+
+print "y($data[0][0]) = $data[0][1]\n";
+my $dataString = "$data[0][0] $data[0][1]\n";
+
 # Run the algorithm and populate the hash
 for(1..$numSteps) {
 	# Get the previous state
@@ -53,18 +67,16 @@ for(1..$numSteps) {
 
 	$data[$_][0] = $thisT;
 	$data[$_][1] = $thisY;
+
+
+	print "y($data[$_][0]) = $data[$_][1]\n";
+	$dataString .= "$data[$_][0] $data[$_][1]\n";
 }
 
-my $dataString = "";
-
-# Print out the values in the hash
-for $i (@data) {
-	print "y(@$i[0]) = @$i[1]\n";
-	$dataString .= "@$i\\n";
-}
-
+print $dataString;
 # Display a nice pretty graph
-`echo "$dataString" | gnuplot -p -e 'plot "-" with lines'`;
+`echo "$dataString" | gnuplot -e 'plot "-" with lines title "Solution"; pause mouse close' &`;
 
-
+print "Press Enter to exit";
+<>;
 
